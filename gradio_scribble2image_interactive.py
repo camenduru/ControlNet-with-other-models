@@ -37,7 +37,8 @@ def create_demo(process, max_images=12):
                 )
                 create_button.click(fn=create_canvas,
                                     inputs=[canvas_width, canvas_height],
-                                    outputs=[input_image])
+                                    outputs=[input_image],
+                                    queue=False)
                 prompt = gr.Textbox(label='Prompt')
                 run_button = gr.Button(label='Run')
                 with gr.Accordion('Advanced options', open=False):
