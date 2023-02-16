@@ -41,14 +41,23 @@ from gradio_scribble2image import create_demo as create_demo_scribble
 from gradio_scribble2image_interactive import \
     create_demo as create_demo_scribble_interactive
 from gradio_seg2image import create_demo as create_demo_seg
-from model import Model
+from model import (DEFAULT_BASE_MODEL_FILENAME, DEFAULT_BASE_MODEL_REPO,
+                   DEFAULT_BASE_MODEL_URL, Model)
 
 MAX_IMAGES = 1
-DESCRIPTION = '''# ControlNet
+DESCRIPTION = '''# [ControlNet](https://github.com/lllyasviel/ControlNet)
 
-This is an unofficial demo for [https://github.com/lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet).
+This Space is a modified version of [this Space](https://huggingface.co/spaces/hysts/ControlNet).
+The original Space uses [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5) as the base model, but [Anything v4.0](https://huggingface.co/andite/anything-v4.0) is used in this Space.
 '''
-if (SPACE_ID := os.getenv('SPACE_ID')) is not None:
+
+SPACE_ID = os.getenv('SPACE_ID')
+ALLOW_CHANGING_BASE_MODEL = SPACE_ID != 'hysts/ControlNet-with-other-models'
+
+if not ALLOW_CHANGING_BASE_MODEL:
+    DESCRIPTION += 'In this Space, the base model is not allowed to be changed so as not to slow down the demo, but it can be changed if you duplicate the Space.'
+
+if SPACE_ID is not None:
     DESCRIPTION += f'''<p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.<br/>
 <a href="https://huggingface.co/spaces/{SPACE_ID}?duplicate=true">
 <img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
@@ -59,6 +68,7 @@ model = Model()
 
 with gr.Blocks(css='style.css') as demo:
     gr.Markdown(DESCRIPTION)
+
     with gr.Tabs():
         with gr.TabItem('Canny'):
             create_demo_canny(model.process_canny, max_images=MAX_IMAGES)
@@ -82,5 +92,30 @@ with gr.Blocks(css='style.css') as demo:
             create_demo_depth(model.process_depth, max_images=MAX_IMAGES)
         with gr.TabItem('Normal map'):
             create_demo_normal(model.process_normal, max_images=MAX_IMAGES)
+
+    with gr.Accordion(label='Base model', open=False):
+        current_base_model = gr.Text(label='Current base model',
+                                     value=DEFAULT_BASE_MODEL_URL)
+        with gr.Row():
+            base_model_repo = gr.Text(label='Base model repo',
+                                      max_lines=1,
+                                      placeholder=DEFAULT_BASE_MODEL_REPO,
+                                      interactive=ALLOW_CHANGING_BASE_MODEL)
+            base_model_filename = gr.Text(
+                label='Base model file',
+                max_lines=1,
+                placeholder=DEFAULT_BASE_MODEL_FILENAME,
+                interactive=ALLOW_CHANGING_BASE_MODEL)
+        change_base_model_button = gr.Button('Change base model')
+        gr.Markdown(
+            '''- You can use other base models by specifying the repository name and filename.
+The base model must be compatible with Stable Diffusion v1.5.''')
+
+    change_base_model_button.click(fn=model.set_base_model,
+                                   inputs=[
+                                       base_model_repo,
+                                       base_model_filename,
+                                   ],
+                                   outputs=current_base_model)
 
 demo.queue(api_open=False).launch()
