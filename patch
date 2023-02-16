@@ -1,0 +1,115 @@
+diff --git a/annotator/hed/__init__.py b/annotator/hed/__init__.py
+index 42d8dc6..1587035 100644
+--- a/annotator/hed/__init__.py
++++ b/annotator/hed/__init__.py
+@@ -1,8 +1,12 @@
++import pathlib
++
+ import numpy as np
+ import cv2
+ import torch
+ from einops import rearrange
+ 
++root_dir = pathlib.Path(__file__).parents[2]
++
+ 
+ class Network(torch.nn.Module):
+     def __init__(self):
+@@ -64,7 +68,7 @@ class Network(torch.nn.Module):
+             torch.nn.Sigmoid()
+         )
+ 
+-        self.load_state_dict({strKey.replace('module', 'net'): tenWeight for strKey, tenWeight in torch.load('./annotator/ckpts/network-bsds500.pth').items()})
++        self.load_state_dict({strKey.replace('module', 'net'): tenWeight for strKey, tenWeight in torch.load(f'{root_dir}/annotator/ckpts/network-bsds500.pth').items()})
+     # end
+ 
+     def forward(self, tenInput):
+diff --git a/annotator/midas/api.py b/annotator/midas/api.py
+index 9fa305e..d8594ea 100644
+--- a/annotator/midas/api.py
++++ b/annotator/midas/api.py
+@@ -1,5 +1,7 @@
+ # based on https://github.com/isl-org/MiDaS
+ 
++import pathlib
++
+ import cv2
+ import torch
+ import torch.nn as nn
+@@ -10,10 +12,11 @@ from .midas.midas_net import MidasNet
+ from .midas.midas_net_custom import MidasNet_small
+ from .midas.transforms import Resize, NormalizeImage, PrepareForNet
+ 
++root_dir = pathlib.Path(__file__).parents[2]
+ 
+ ISL_PATHS = {
+-    "dpt_large": "annotator/ckpts/dpt_large-midas-2f21e586.pt",
+-    "dpt_hybrid": "annotator/ckpts/dpt_hybrid-midas-501f0c75.pt",
++    "dpt_large": f"{root_dir}/annotator/ckpts/dpt_large-midas-2f21e586.pt",
++    "dpt_hybrid": f"{root_dir}/annotator/ckpts/dpt_hybrid-midas-501f0c75.pt",
+     "midas_v21": "",
+     "midas_v21_small": "",
+ }
+diff --git a/annotator/mlsd/__init__.py b/annotator/mlsd/__init__.py
+index 75db717..f310fe6 100644
+--- a/annotator/mlsd/__init__.py
++++ b/annotator/mlsd/__init__.py
+@@ -1,3 +1,5 @@
++import pathlib
++
+ import cv2
+ import numpy as np
+ import torch
+@@ -8,8 +10,9 @@ from .models.mbv2_mlsd_tiny import  MobileV2_MLSD_Tiny
+ from .models.mbv2_mlsd_large import  MobileV2_MLSD_Large
+ from .utils import  pred_lines
+ 
++root_dir = pathlib.Path(__file__).parents[2]
+ 
+-model_path = './annotator/ckpts/mlsd_large_512_fp32.pth'
++model_path = f'{root_dir}/annotator/ckpts/mlsd_large_512_fp32.pth'
+ model = MobileV2_MLSD_Large()
+ model.load_state_dict(torch.load(model_path), strict=True)
+ model = model.cuda().eval()
+diff --git a/annotator/openpose/__init__.py b/annotator/openpose/__init__.py
+index 47d50a5..2369eed 100644
+--- a/annotator/openpose/__init__.py
++++ b/annotator/openpose/__init__.py
+@@ -1,4 +1,5 @@
+ import os
++import pathlib
+ os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+ 
+ import torch
+@@ -7,8 +8,10 @@ from . import util
+ from .body import Body
+ from .hand import Hand
+ 
+-body_estimation = Body('./annotator/ckpts/body_pose_model.pth')
+-hand_estimation = Hand('./annotator/ckpts/hand_pose_model.pth')
++root_dir = pathlib.Path(__file__).parents[2]
++
++body_estimation = Body(f'{root_dir}/annotator/ckpts/body_pose_model.pth')
++hand_estimation = Hand(f'{root_dir}/annotator/ckpts/hand_pose_model.pth')
+ 
+ 
+ def apply_openpose(oriImg, hand=False):
+diff --git a/annotator/uniformer/__init__.py b/annotator/uniformer/__init__.py
+index 500e53c..4061dbe 100644
+--- a/annotator/uniformer/__init__.py
++++ b/annotator/uniformer/__init__.py
+@@ -1,9 +1,12 @@
++import pathlib
++
+ from annotator.uniformer.mmseg.apis import init_segmentor, inference_segmentor, show_result_pyplot
+ from annotator.uniformer.mmseg.core.evaluation import get_palette
+ 
++root_dir = pathlib.Path(__file__).parents[2]
+ 
+-checkpoint_file = "annotator/ckpts/upernet_global_small.pth"
+-config_file = 'annotator/uniformer/exp/upernet_global_small/config.py'
++checkpoint_file = f"{root_dir}/annotator/ckpts/upernet_global_small.pth"
++config_file = f'{root_dir}/annotator/uniformer/exp/upernet_global_small/config.py'
+ model = init_segmentor(config_file, checkpoint_file).cuda()
+ 
+ 
