@@ -45,30 +45,10 @@ from model import (DEFAULT_BASE_MODEL_FILENAME, DEFAULT_BASE_MODEL_REPO,
                    DEFAULT_BASE_MODEL_URL, Model)
 
 MAX_IMAGES = 1
-DESCRIPTION = '''# [ControlNet](https://github.com/lllyasviel/ControlNet)
-
-This Space is a modified version of [this Space](https://huggingface.co/spaces/hysts/ControlNet).
-The original Space uses [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5) as the base model, but [Anything v4.0](https://huggingface.co/andite/anything-v4.0) is used in this Space.
-'''
-
-SPACE_ID = os.getenv('SPACE_ID')
-ALLOW_CHANGING_BASE_MODEL = SPACE_ID != 'hysts/ControlNet-with-other-models'
-
-if not ALLOW_CHANGING_BASE_MODEL:
-    DESCRIPTION += 'In this Space, the base model is not allowed to be changed so as not to slow down the demo, but it can be changed if you duplicate the Space.'
-
-if SPACE_ID is not None:
-    DESCRIPTION += f'''<p>For faster inference without waiting in queue, you may duplicate the space and upgrade to GPU in settings.<br/>
-<a href="https://huggingface.co/spaces/{SPACE_ID}?duplicate=true">
-<img style="margin-top: 0em; margin-bottom: 0em" src="https://bit.ly/3gLdBN6" alt="Duplicate Space"></a>
-<p/>
-'''
 
 model = Model()
 
 with gr.Blocks(css='style.css') as demo:
-    gr.Markdown(DESCRIPTION)
-
     with gr.Tabs():
         with gr.TabItem('Canny'):
             create_demo_canny(model.process_canny, max_images=MAX_IMAGES)
