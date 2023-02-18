@@ -41,10 +41,13 @@ MODEL_NAMES = {
 }
 MODEL_REPO = 'webui/ControlNet-modules-safetensors'
 
-DEFAULT_BASE_MODEL_REPO = 'andite/anything-v4.0'
-DEFAULT_BASE_MODEL_FILENAME = 'anything-v4.0-pruned.safetensors'
-DEFAULT_BASE_MODEL_URL = 'https://huggingface.co/andite/anything-v4.0/resolve/main/anything-v4.0-pruned.safetensors'
+DEFAULT_BASE_MODEL_REPO = 'DEFAULT_BASE_MODEL_REPO_PLACEHOLDER'
+DEFAULT_BASE_MODEL_FILENAME = 'DEFAULT_BASE_MODEL_FILENAME_PLACEHOLDER'
+DEFAULT_BASE_MODEL_URL = 'DEFAULT_BASE_MODEL_URL_PLACEHOLDER'
 
+# DEFAULT_BASE_MODEL_REPO = 'andite/anything-v4.0'
+# DEFAULT_BASE_MODEL_FILENAME = 'anything-v4.0-pruned.safetensors'
+# DEFAULT_BASE_MODEL_URL = 'https://huggingface.co/andite/anything-v4.0/resolve/main/anything-v4.0-pruned.safetensors'
 
 class Model:
     def __init__(self,
