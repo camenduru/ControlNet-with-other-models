@@ -45,6 +45,7 @@ from model import (DEFAULT_BASE_MODEL_FILENAME, DEFAULT_BASE_MODEL_REPO,
                    DEFAULT_BASE_MODEL_URL, Model)
 
 MAX_IMAGES = 1
+ALLOW_CHANGING_BASE_MODEL = 'hysts/ControlNet-with-other-models'
 
 model = Model()
 
